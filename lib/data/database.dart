@@ -33,6 +33,9 @@ class recentdel{
 
   final _recentDeleted = Hive.box('recentDeleted');
 
+  //set duration for delete timer
+  final Duration autoDeleteDuration = Duration(days: 3);
+
   
   void createInitialData() {
     // A deleted list should start empty
@@ -43,6 +46,26 @@ class recentdel{
   void loadData() {
     // Ensure you use the correct key for the deleted list data
     deletedList = _recentDeleted.get("DELETEDLIST") ?? [];
+
+    List<dynamic> newList = [];
+    DateTime now = DateTime.now();
+
+    for (var item in deletedList) {
+      if (item.length > 3 && item[3] is DateTime) {
+        DateTime deletionDate = item[3] as DateTime;
+
+        if (now.difference(deletionDate) < autoDeleteDuration ) {
+          newList.add(item);
+        } else {
+          print('Auto-delted expired Task: ${item[0]}');
+        }
+      } else {
+        newList.add(item);
+      }
+    }
+
+    deletedList = newList;
+    updateDataBase();
     
   }
 

@@ -21,34 +21,22 @@ class _HomePageState extends State<Recentdel> {
   // Inside class _HomePageState extends State<Recentdel> { ...
 
 @override
-void didChangeDependencies() {
-    // 1. Ensure db loads ALL existing tasks from the main box 
-    //    *every time* the screen is visible.
+  void initState() {
     try {
-        db.loadData();
+      rd.loadData();
     } catch (e) {
-        // Handle potential corruption by resetting the box
-        Hive.box('myBox').clear();
-        db.createInitialData(); 
+      _recentDeleted.clear();
+      rd.createInitialData();
     }
+    super.initState();
+  }
 
-    // 2. Load deleted list data
-    try {
-        rd.loadData();
-    } catch (e) {
-        _recentDeleted.clear();
-        rd.createInitialData();
-    }
-    
-    // Call setState to rebuild the list view
-    setState(() {}); 
-    
-    super.didChangeDependencies();
-}
 
 void restoreTask(int index) {
     setState(() {
         List<dynamic> taskToRestore = rd.deletedList[index];
+
+        taskToRestore.remove(taskToRestore[3]);
         
         // This task is being added to the list loaded above.
         db.toDoList.add(taskToRestore);
@@ -59,12 +47,12 @@ void restoreTask(int index) {
     // This now saves the fully loaded list (old tasks + restored task).
     db.updateDataBase();
     rd.updateDataBase();
+
+    //return to home page after restoration
+    Navigator.pop(context);
 }
 // ...
     @override
-  void initState() {
-    super.initState();
-  }
 
   //RestoreAction
   void deleteTask(int index) {
@@ -76,9 +64,13 @@ void restoreTask(int index) {
   }
 
   //return task
+  // ignore: non_constant_identifier_names
   void RestoreTask(int index) {
     setState(() {
       List<dynamic> taskToRestore = rd.deletedList[index];
+      if (taskToRestore.length > 3) {
+            taskToRestore.removeAt(3); 
+        }
       db.toDoList.add(taskToRestore);
       rd.deletedList.removeAt(index);
     });
@@ -114,6 +106,9 @@ void restoreTask(int index) {
       body: ListView.builder(
         itemCount: rd.deletedList.length,
         itemBuilder: (context, index) {
+          if (rd.deletedList[index].length < 2) {
+            return ListTile(title: Text('Invalid Task Data'));
+          }
           return TodotileDel(
           taskName: rd.deletedList[index][0],
           taskComplete: rd.deletedList[index][1],

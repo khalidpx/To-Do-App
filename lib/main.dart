@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:to_doapp/data/database.dart';
 import 'package:to_doapp/pages/home_page.dart';
 import 'package:to_doapp/pages/recentdel.dart';
 
@@ -24,7 +25,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: HomePage(),
 
-
+      routes: {
+        '/homepage' : (context) => HomePage(),
+        '/recentdel' : (context) => Recentdel(),
+      },
+    
     );
   }
 }

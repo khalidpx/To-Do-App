@@ -1,8 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 
+// ignore: must_be_immutable
 class TodoTile extends StatelessWidget {
   TodoTile({
     super.key,

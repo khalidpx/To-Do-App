@@ -54,7 +54,6 @@ try {
   }
 
   // Load the deleted list data
-    rd.loadData();
 
     super.initState();
   }
@@ -118,6 +117,7 @@ try {
   void deleteTask(int index) {
     setState(() {
       List<dynamic> taskToDelete = db.toDoList[index];
+      taskToDelete.add(DateTime.now());
       rd.deletedList.add(taskToDelete);
       db.toDoList.removeAt(index);
     });
@@ -126,12 +126,6 @@ try {
 
   }
 
-
-  //theme mode
-  void mode(){  
-    String mode = '';
-
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,6 +159,7 @@ try {
         
              setState(() {
                db.loadData();
+               rd.loadData();
              });
           },
           
